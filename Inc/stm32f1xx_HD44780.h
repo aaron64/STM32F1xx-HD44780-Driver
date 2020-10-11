@@ -34,6 +34,7 @@ typedef struct
 #define HD44780_SEGMENTS			16
 
 #define HD44780_SPEED				1
+#define HD44780_READ_SPEED			4
 
 #define HD44780_INIT_BUS_SIZE_4		0
 #define HD44780_INIT_BUS_SIZE_8		16

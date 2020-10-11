@@ -61,9 +61,9 @@ void HD44780_Read(HD44780_TypeDef *HD44780, char *str)
 	for(int i = 0; i < HD44780_SEGMENTS; i++)
 	{
 		c = 0;
-		HAL_Delay(10);
+		HAL_Delay(HD44780_READ_SPEED);
 		HAL_GPIO_WritePin(HD44780->GPIOPort, HD44780->PinEN, GPIO_PIN_SET);
-		HAL_Delay(10);
+		HAL_Delay(HD44780_READ_SPEED);
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD0) << 0);
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD1) << 1);
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD2) << 2);
@@ -73,24 +73,24 @@ void HD44780_Read(HD44780_TypeDef *HD44780, char *str)
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD6) << 6);
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD7) << 7);
 		str[i] = c;
-		HAL_Delay(10);
+		HAL_Delay(HD44780_READ_SPEED);
 		HAL_GPIO_WritePin(HD44780->GPIOPort, HD44780->PinEN, GPIO_PIN_RESET);
 	}
 
 	for(int i = 0; i < (40-HD44780_SEGMENTS); i++)
 	{
-		HAL_Delay(10);
+		HAL_Delay(HD44780_READ_SPEED);
 		HAL_GPIO_WritePin(HD44780->GPIOPort, HD44780->PinEN, GPIO_PIN_SET);
-		HAL_Delay(10);
+		HAL_Delay(HD44780_READ_SPEED);
 		HAL_GPIO_WritePin(HD44780->GPIOPort, HD44780->PinEN, GPIO_PIN_RESET);
 	}
 
 	for(int i = 0; i < HD44780_SEGMENTS; i++)
 	{
 		c = 0;
-		HAL_Delay(10);
+		HAL_Delay(HD44780_READ_SPEED);
 		HAL_GPIO_WritePin(HD44780->GPIOPort, HD44780->PinEN, GPIO_PIN_SET);
-		HAL_Delay(10);
+		HAL_Delay(HD44780_READ_SPEED);
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD0) << 0);
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD1) << 1);
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD2) << 2);
@@ -100,7 +100,7 @@ void HD44780_Read(HD44780_TypeDef *HD44780, char *str)
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD6) << 6);
 		c |= (HAL_GPIO_ReadPin(HD44780->GPIOPort, HD44780->PinD7) << 7);
 		str[HD44780_SEGMENTS+i] = c;
-		HAL_Delay(10);
+		HAL_Delay(HD44780_READ_SPEED);
 		HAL_GPIO_WritePin(HD44780->GPIOPort, HD44780->PinEN, GPIO_PIN_RESET);
 	}
 

@@ -157,6 +157,7 @@ void HD44780_CursorUp(HD44780_TypeDef *HD44780)
 
 void HD44780_CursorDown(HD44780_TypeDef *HD44780)
 {
+	// TODO: Finish cursor down
 	uint8_t pos = HD44780->Pos%HD44780_SEGMENTS;
 	
 }
@@ -171,12 +172,14 @@ void HD44780_MoveToPos(HD44780_TypeDef *HD44780, uint8_t Pos)
 
 void HD44780_MoveToLine(HD44780_TypeDef *HD44780, uint8_t Line)
 {
+	// TODO: Handle max lines
 	HD44780->Pos = Line;
 	HD44780_SendData(HD44780, HD44780_FUNCTION_SET_DDRAM | Line);
 }
 
 void HD44780_SwitchLines(HD44780_TypeDef *HD44780)
 {
+	// TODO: Handle max lines
 	if(HD44780->Pos < HD44780_LINE_2)
 		if(HD44780->Direction == 1)
 			HD44780_MoveToLine(HD44780, HD44780_LINE_2);

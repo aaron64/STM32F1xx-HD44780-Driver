@@ -23,13 +23,13 @@ int testWrite()
 
 	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
 	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
-	HD44780_Printf(&HD44780, "Hello World!");
-	HD44780_SwitchLines(&HD44780);
 	HD44780_Printf(&HD44780, "HD44780 Driver");
+	HD44780_SwitchLines(&HD44780);
+	HD44780_Printf(&HD44780, "Test: 01");
 
 	HD44780_Read(&HD44780, str);
 
-	return (strcmp(str, "Hello World!    HD44780 Driver  ")==0);
+	return (strcmp(str, "HD44780 Driver  Test: 01        ")==0);
 }
 
 int testClear()
@@ -40,9 +40,9 @@ int testClear()
 
 	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
 	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
-	HD44780_Printf(&HD44780, "Hello World!");
-	HD44780_SwitchLines(&HD44780);
 	HD44780_Printf(&HD44780, "HD44780 Driver");
+	HD44780_SwitchLines(&HD44780);
+	HD44780_Printf(&HD44780, "Test: 02");
 	HD44780_Clear(&HD44780);
 
 	HD44780_Read(&HD44780, str);
@@ -60,12 +60,12 @@ int testReverseWrite()
 	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
 	HD44780_Direction(&HD44780, HD44780_DIRECTION_LEFT);
 	HD44780_MoveToPos(&HD44780, HD44780_LINE_2 + 15);
+	HD44780_Printf(&HD44780, "        30 :tseT");
 	HD44780_Printf(&HD44780, "  revirD 08744DH");
-	HD44780_Printf(&HD44780, "    !dlroW olleH");
 
 	HD44780_Read(&HD44780, str);
 
-	return (strcmp(str, "Hello World!    HD44780 Driver  ")==0);
+	return (strcmp(str, "HD44780 Driver  Test: 03        ")==0);
 }
 
 int testWordWrap()
@@ -76,11 +76,48 @@ int testWordWrap()
 
 	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
 	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
-	HD44780_Printf(&HD44780, "Hello World!    HD44780 Driver");
+	HD44780_Printf(&HD44780, "HD44780 Driver  Test: 04");
 
 	HD44780_Read(&HD44780, str);
 
-	return (strcmp(str, "Hello World!    HD44780 Driver  ")==0);
+	return (strcmp(str, "HD44780 Driver  Test: 04        ")==0);
+}
+
+int testSetPosition()
+{
+	char str[33];
+
+	HD44780_TypeDef HD44780 = HD44780_CreateFromBus(GPIOA, GPIO_PIN_0, GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12);
+
+	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
+	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
+	HD44780_Printf(&HD44780, "HD44780");
+	HD44780_MoveToPos(&HD44780, 8);
+	HD44780_Printf(&HD44780, "Driver");
+	HD44780_MoveToPos(&HD44780, HD44780_LINE_2);
+	HD44780_Printf(&HD44780, "Test: 05");
+
+	HD44780_Read(&HD44780, str);
+
+	return (strcmp(str, "HD44780 Driver  Test: 05        ")==0);
+}
+
+int testSetLine()
+{
+	char str[33];
+
+	HD44780_TypeDef HD44780 = HD44780_CreateFromBus(GPIOA, GPIO_PIN_0, GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12);
+
+	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
+	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
+	HD44780_MoveToLine(&HD44780, HD44780_LINE_2);
+	HD44780_Printf(&HD44780, "Test: 06");
+	HD44780_MoveToLine(&HD44780, HD44780_LINE_1);
+	HD44780_Printf(&HD44780, "HD44780 Driver");
+
+	HD44780_Read(&HD44780, str);
+
+	return (strcmp(str, "HD44780 Driver  Test: 06        ")==0);
 }
 
 int main(void)
@@ -105,6 +142,14 @@ int main(void)
 
 	assert(testWordWrap());
 	printf("Word wrap test passed\n");
+
+	assert(testSetPosition());
+	printf("Set position test passed\n");
+
+	assert(testSetLine());
+	printf("Set line test passed\n");
+
+	printf("All tests pass\n");
 
 	while (1) {}
 }
