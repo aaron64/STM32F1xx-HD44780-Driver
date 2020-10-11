@@ -28,11 +28,12 @@ typedef struct
 	uint32_t PinRS;				// Register select pin for the controller
 
 	uint16_t Pos;				// Current cursor position
+	int8_t Direction;			// Direction the cursor moves
 } HD44780_TypeDef;
 
 #define HD44780_SEGMENTS			16
 
-#define HD44780_SPEED				100
+#define HD44780_SPEED				1
 
 #define HD44780_INIT_BUS_SIZE_4		0
 #define HD44780_INIT_BUS_SIZE_8		16
@@ -54,12 +55,15 @@ typedef struct
 #define HD44780_DISPLAY_BLINK_ON	1
 
 #define HD44780_DIRECTION_LEFT		0
-#define HD44780_DIRECTION_RIGHT		1
+#define HD44780_DIRECTION_RIGHT		2
 
 #define HD44780_SHIFT_DISPLAY		0
 #define HD44780_SHIFT_CURSOR		8
 #define HD44780_SHIFT_RIGHT			0
 #define HD44780_SHIFT_LEFT			4
+
+#define HD44780_RS_DI				0
+#define HD44780_RS_EN				1
 
 #define HD44780_FUNCTION_CLEAR		0b00000001
 #define HD44780_FUNCTION_HOME		0b00000010
@@ -138,12 +142,6 @@ void HD44780_DisplayMode(HD44780_TypeDef *HD44780, uint8_t Options);
  */
 void HD44780_Direction(HD44780_TypeDef *HD44780, uint8_t Options);
 
-
-void HD44780_Shift(HD44780_TypeDef *HD44780, uint8_t Options);
-
-
-char HD44780_Read(HD44780_TypeDef *HD44780);
-
 /**
  * Print a char on cursor location
  * @param HD44780 HD44780 pin description
@@ -160,6 +158,29 @@ void HD44780_Printf(HD44780_TypeDef *HD44780, char *s, ...);
  */
 void HD44780_Clear(HD44780_TypeDef *HD44780);
 
+/**
+ * Move cursor right
+ * @param HD44780 HD44780 pin description
+ */
+void HD44780_CursorRight(HD44780_TypeDef *HD44780);
+
+/**
+ * Move cursor left
+ * @param HD44780 HD44780 pin description
+ */
+void HD44780_CursorLeft(HD44780_TypeDef *HD44780);
+
+/**
+ * Move cursor up
+ * @param HD44780 HD44780 pin description
+ */
+void HD44780_CursorUp(HD44780_TypeDef *HD44780);
+
+/**
+ * Move cursor down
+ * @param HD44780 HD44780 pin description
+ */
+void HD44780_CursorDown(HD44780_TypeDef *HD44780);
 
 void HD44780_MoveToPos(HD44780_TypeDef *HD44780, uint8_t Pos);
 
