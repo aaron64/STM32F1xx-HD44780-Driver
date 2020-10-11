@@ -83,6 +83,22 @@ int testWordWrap()
 	return (strcmp(str, "HD44780 Driver  Test: 04        ")==0);
 }
 
+int testReverseWrap()
+{
+	char str[33];
+
+	HD44780_TypeDef HD44780 = HD44780_CreateFromBus(GPIOA, GPIO_PIN_0, GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12);
+
+	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
+	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
+	HD44780_Direction(&HD44780, HD44780_DIRECTION_LEFT);
+	HD44780_Printf(&HD44780, "         50 :tseT  revirD 08744DH");
+
+	HD44780_Read(&HD44780, str);
+
+	return (strcmp(str, "HD44780 Driver  Test: 05        ")==0);
+}
+
 int testSetPosition()
 {
 	char str[33];
@@ -95,11 +111,11 @@ int testSetPosition()
 	HD44780_MoveToPos(&HD44780, 8);
 	HD44780_Printf(&HD44780, "Driver");
 	HD44780_MoveToPos(&HD44780, HD44780_LINE_2);
-	HD44780_Printf(&HD44780, "Test: 05");
+	HD44780_Printf(&HD44780, "Test: 06");
 
 	HD44780_Read(&HD44780, str);
 
-	return (strcmp(str, "HD44780 Driver  Test: 05        ")==0);
+	return (strcmp(str, "HD44780 Driver  Test: 06        ")==0);
 }
 
 int testSetLine()
@@ -111,13 +127,63 @@ int testSetLine()
 	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
 	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
 	HD44780_MoveToLine(&HD44780, HD44780_LINE_2);
-	HD44780_Printf(&HD44780, "Test: 06");
+	HD44780_Printf(&HD44780, "Test: 07");
 	HD44780_MoveToLine(&HD44780, HD44780_LINE_1);
 	HD44780_Printf(&HD44780, "HD44780 Driver");
 
 	HD44780_Read(&HD44780, str);
 
-	return (strcmp(str, "HD44780 Driver  Test: 06        ")==0);
+	return (strcmp(str, "HD44780 Driver  Test: 07        ")==0);
+}
+
+int testSeparatedBus()
+{
+	char str[33];
+
+	HD44780_TypeDef HD44780 = HD44780_Create(GPIOA, GPIO_PIN_0, GPIO_PIN_1, GPIO_PIN_2, GPIO_PIN_3, GPIO_PIN_4, GPIO_PIN_5, GPIO_PIN_6, GPIO_PIN_7, 
+    GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12);
+
+	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
+	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
+	HD44780_Printf(&HD44780, "HD44780 Driver");
+	HD44780_SwitchLines(&HD44780);
+	HD44780_Printf(&HD44780, "Test: 08");
+
+	HD44780_Read(&HD44780, str);
+
+	return (strcmp(str, "HD44780 Driver  Test: 08        ")==0);
+}
+
+int testPrintfFormatting()
+{
+	char str[33];
+
+	HD44780_TypeDef HD44780 = HD44780_CreateFromBus(GPIOA, GPIO_PIN_0, GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12);
+
+	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
+	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
+	HD44780_Printf(&HD44780, "HD44780 %s", "Driver");
+	HD44780_SwitchLines(&HD44780);
+	HD44780_Printf(&HD44780, "Test: %02i", 9);
+
+	HD44780_Read(&HD44780, str);
+
+	return (strcmp(str, "HD44780 Driver  Test: 09        ")==0);
+}
+
+
+
+void testsPassed()
+{
+	HD44780_TypeDef HD44780 = HD44780_CreateFromBus(GPIOA, GPIO_PIN_0, GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12);
+
+	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
+	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
+	HD44780_Printf(&HD44780, "HD44780 Driver");
+	HD44780_SwitchLines(&HD44780);
+	HD44780_Printf(&HD44780, "All tests pass");
+
+	printf("All tests pass\n");
 }
 
 int main(void)
@@ -143,13 +209,22 @@ int main(void)
 	assert(testWordWrap());
 	printf("Word wrap test passed\n");
 
+	assert(testReverseWrap());
+	printf("Reverse wrap test passed\n");
+
 	assert(testSetPosition());
 	printf("Set position test passed\n");
 
 	assert(testSetLine());
 	printf("Set line test passed\n");
 
-	printf("All tests pass\n");
+	assert(testSeparatedBus());
+	printf("Separated bus test passed\n");
+
+	assert(testPrintfFormatting());
+	printf("Printf Formatting test passed\n");
+
+	testsPassed();
 
 	while (1) {}
 }
