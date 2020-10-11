@@ -146,11 +146,15 @@ void HD44780_Direction(HD44780_TypeDef *HD44780, uint8_t Options);
 /**
  * Print a char on cursor location
  * @param HD44780 HD44780 pin description
- * @param c       Character to print
+ * @param 		  c Character to print
  */
 void HD44780_PrintChar(HD44780_TypeDef *HD44780, char c);
 
-
+/**
+ * Print a formatted string on cursor location
+ * @param HD44780 HD44780 pin description
+ * @param s 	  String to print
+ */
 void HD44780_Printf(HD44780_TypeDef *HD44780, char *s, ...);
 
 /**
@@ -183,6 +187,11 @@ void HD44780_CursorUp(HD44780_TypeDef *HD44780);
  */
 void HD44780_CursorDown(HD44780_TypeDef *HD44780);
 
+/**
+ * Sets the cursor to a position
+ * @param HD44780 HD44780 pin description
+ * @param Pos     Position to move to
+ */
 void HD44780_MoveToPos(HD44780_TypeDef *HD44780, uint8_t Pos);
 
 /**
