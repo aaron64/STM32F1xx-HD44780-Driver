@@ -190,3 +190,25 @@ void HD44780_SwitchLines(HD44780_TypeDef *HD44780)
 	else
 		HD44780_MoveToLine(HD44780, HD44780_LINE_1);
 }
+
+void HD44780_PrintCustomChar(HD44780_TypeDef *HD44780, uint8_t pos)
+{
+	HD44780_WriteRS(HD44780, HD44780_RS_EN);
+	HD44780_SendData(HD44780, pos);
+	HD44780_WriteRS(HD44780, HD44780_RS_DI);
+}
+
+void HD44780_RegisterCustomChar(HD44780_TypeDef *HD44780, uint8_t pos, uint8_t *data)
+{
+	pos *= 8;
+	uint8_t cursorPos = HD44780->Pos;
+	HD44780_SendData(HD44780, HD44780_FUNCTION_SET_CGRAM);
+	HD44780_WriteRS(HD44780, HD44780_RS_EN);
+	for(int i = 0; i < 8; i++)
+	{
+		HAL_Delay(HD44780_SPEED);
+		HD44780_SendData(HD44780, data[i]);
+	}
+	HD44780_WriteRS(HD44780, HD44780_RS_DI);
+	HD44780_MoveToPos(HD44780, cursorPos);
+}

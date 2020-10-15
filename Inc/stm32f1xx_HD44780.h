@@ -209,4 +209,8 @@ void HD44780_MoveToLine(HD44780_TypeDef *HD44780, uint8_t Line);
  */
 void HD44780_SwitchLines(HD44780_TypeDef *HD44780);
 
+void HD44780_PrintCustomChar(HD44780_TypeDef *HD44780, uint8_t pos);
+
+void HD44780_RegisterCustomChar(HD44780_TypeDef *HD44780, uint8_t pos, uint8_t data[]);
+
 #endif /* __STM32F1XX_HD44780_DEF */

@@ -179,9 +179,9 @@ void testsPassed()
 
 	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_LG);
 	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
-	HD44780_Printf(&HD44780, "HD44780 Driver");
+	HD44780_Printf(&HD44780, "Hello World!");
 	HD44780_SwitchLines(&HD44780);
-	HD44780_Printf(&HD44780, "All tests pass");
+	HD44780_Printf(&HD44780, "HD44780 Driver");
 
 	printf("All tests pass\n");
 }
@@ -195,36 +195,58 @@ int main(void)
 
 	MX_GPIO_Init();
 
+	uint8_t arr[] = {
+		0b00000,
+		0b01010,
+		0b10101,
+		0b10001,
+		0b01010,
+		0b00100,
+		0b00000,
+		0b00000
+	};
+
 	initialise_monitor_handles();
 
-	assert(testWrite());
-	printf("Write test passed\n");
+	HD44780_TypeDef HD44780 = HD44780_CreateFromBus(GPIOA, GPIO_PIN_0, GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12);
 
-	assert(testClear());
-	printf("Clear test passed\n");
+	HD44780_Init(&HD44780, HD44780_INIT_BUS_SIZE_8 | HD44780_INIT_LINES_2 | HD44780_INIT_FONT_SIZE_SM);
+	HD44780_DisplayMode(&HD44780, HD44780_DISPLAY_ON | HD44780_DISPLAY_CURSOR_ON | HD44780_DISPLAY_BLINK_OFF);
+	HD44780_RegisterCustomChar(&HD44780, 0, arr);
+	HD44780_PrintCustomChar(&HD44780, 0);
+	//HD44780_Printf(&HD44780, "HD44780 Driver");
+	HD44780_SwitchLines(&HD44780);
+	//HD44780_Printf(&HD44780, "Test: 01");
 
-	assert(testReverseWrite());
-	printf("Reverse write test passed\n");
 
-	assert(testWordWrap());
-	printf("Word wrap test passed\n");
+	// assert(testWrite());
+	// printf("Write test passed\n");
 
-	assert(testReverseWrap());
-	printf("Reverse wrap test passed\n");
+	// assert(testClear());
+	// printf("Clear test passed\n");
 
-	assert(testSetPosition());
-	printf("Set position test passed\n");
+	// assert(testReverseWrite());
+	// printf("Reverse write test passed\n");
 
-	assert(testSetLine());
-	printf("Set line test passed\n");
+	// assert(testWordWrap());
+	// printf("Word wrap test passed\n");
 
-	assert(testSeparatedBus());
-	printf("Separated bus test passed\n");
+	// assert(testReverseWrap());
+	// printf("Reverse wrap test passed\n");
 
-	assert(testPrintfFormatting());
-	printf("Printf Formatting test passed\n");
+	// assert(testSetPosition());
+	// printf("Set position test passed\n");
 
-	testsPassed();
+	// assert(testSetLine());
+	// printf("Set line test passed\n");
+
+	// assert(testSeparatedBus());
+	// printf("Separated bus test passed\n");
+
+	// assert(testPrintfFormatting());
+	// printf("Printf Formatting test passed\n");
+
+	// testsPassed();
 
 	while (1) {}
 }
